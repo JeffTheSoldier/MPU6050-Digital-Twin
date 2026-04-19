@@ -53,9 +53,9 @@ Use these keys in the Processing window to tune your flight dynamics in real-tim
 
 ---
 
-### System Architecture & Performance
-| Hardware Configuration | PID Response Analysis |
+### 📷 Media
+| Hardware Configuration | Processing Screenshot |
 | :---: | :---: |
-| ![Hardware Setup](images/IMG_1993.JPG) | ![PID Chart](images/ScreenshotHIL.png) |
+| ![Hardware Setup](images/IMG_1993.jpg) | ![Processing Screenshot](images/ScreenshotHIL.png) |
 
 ---
