@@ -1,35 +1,61 @@
 # Real-Time Digital Twin & HIL Flight Controller
 
-This project implements a **Hardware-in-the-Loop (HIL)** simulation for a quadcopter stabilization system using an **Arduino Nano** and an **MPU-6050** IMU. It features a custom-built C++ control loop and a Java-based 3D visualization.
+![Digital Twin Demo](images/HIL_demo.gif)
 
-## 🚀 Features
+This project implements a **Hardware-in-the-Loop (HIL)** simulation for a quadcopter stabilization system using an **Arduino Nano** and an **MPU-6050** IMU. It features a custom-built C++ control loop and a Java-based 3D visualization to bridge the gap between physical sensors and digital simulations.
+
+## 🚀 Key Features
 * **Dual-Axis PID Control:** Real-time stabilization logic for Pitch and Roll.
 * **Sensor Fusion:** Implements a Complementary Filter to eliminate Gyro drift.
-* **Live Tuning:** Adjust PID constants (Kp, Ki, Kd) via keyboard without re-uploading code.
+* **Live Tuning:** Adjust PID constants ($K_p, K_i, K_d$) via keyboard without re-uploading code.
 * **3D Digital Twin:** Real-time X-frame visualization using Processing (Java).
+* **MIMO Motor Mixing:** Advanced logic to translate 2-axis orientation into 4-motor thrust commands.
 
 ## 🛠️ Hardware Requirements
 * **Microcontroller:** Arduino Nano (ATmega328P)
 * **Sensor:** MPU-6050 (3-axis Accelerometer & Gyroscope)
-* **Communication:** I2C Protocol
 * **Wiring:** * VCC -> 5V / GND -> GND
   * SDA -> A4 / SCL -> A5
 
 ## 💻 Software Stack
-* **Arduino IDE:** To compile and upload the C++ control logic.
-* **Processing IDE:** To run the Java-based Digital Twin and GUI.
-* **Baud Rate:** 115200 (Essential for real-time performance).
+* **Arduino IDE:** C++ firmware for the real-time controller.
+* **Processing IDE:** Java-based 3D rendering and Ground Control Station.
+* **Communication:** Serial CSV protocol at 115200 Baud.
 
-## ⚙️ The Process (How it Works)
-1. **Sensing:** The MPU-6050 captures raw motion data.
-2. **Filtering:** The Arduino applies a Complementary Filter to get clean Pitch/Roll angles.
-3. **Control Logic:** A PID algorithm calculates the "effort" required to maintain 0°.
-4. **Telemetry:** Data is streamed via Serial in CSV format.
-5. **Visualization:** Processing parses the data and rotates a 3D model while updating the Motor Mixing HUD.
+## ⚙️ Control Theory & Process
+The system operates on a 100Hz control loop. The Arduino calculates the error between the current orientation and the target ($0^\circ$). Using a PID algorithm, it determines the corrective effort:
 
-## 🕹️ How to Use
-1. Connect the MPU-6050 to the Arduino Nano.
-2. Open `Arduino_Controller.ino`, set the I2C address (0x68/0x69), and upload.
-3. **Close the Serial Monitor** (Crucial: the port must be free).
-4. Open `Processing_Visualizer.pde` and click **Run**.
-5. Use keys **Q/A (Kp)**, **W/S (Ki)**, and **E/D (Kd)** to tune the flight dynamics live.
+$$Output = (K_p \cdot e) + (K_i \cdot \int e \, dt) + (K_d \cdot \frac{de}{dt})$$
+
+The result is streamed to the Digital Twin, which applies **Motor Mixing Logic** to determine individual motor thrust:
+* **Front-Left (FL):** $Thrust - PID_{Pitch} + PID_{Roll}$
+* **Front-Right (FR):** $Thrust - PID_{Pitch} - PID_{Roll}$
+* **Back-Left (BL):** $Thrust + PID_{Pitch} + PID_{Roll}$
+* **Back-Right (BR):** $Thrust + PID_{Pitch} - PID_{Roll}$
+
+---
+
+## 🕹️ Live Tuning Controls
+Use these keys in the Processing window to tune your flight dynamics in real-time:
+
+| Axis | Increase | Decrease |
+| :--- | :--- | :--- |
+| **Kp (Proportional)** | Q | A |
+| **Ki (Integral)** | W | S |
+| **Kd (Derivative)** | E | D |
+
+---
+
+## 📂 Project Structure
+* `/Arduino_Controller`: C++ source code for the Nano.
+* `/Processing_Visualizer`: Java source code for the 3D Twin.
+* `/images`: Media assets for documentation.
+
+---
+
+### System Architecture & Performance
+| Hardware Configuration | PID Response Analysis |
+| :---: | :---: |
+| ![Hardware Setup](images/IMG_1993.JPG) | ![PID Chart](images/ScreenshotHIL.png) |
+
+---
