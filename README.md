@@ -56,6 +56,6 @@ Use these keys in the Processing window to tune your flight dynamics in real-tim
 ## 📷 Media
 | Hardware Configuration | Processing Screenshot |
 | :---: | :---: |
-| <img src="images/IMG_1994.jpg" width="350"> | <img src="images/ScreenshotHIL.png" width="350"> |
+| <img src="images/IMG_1994.jpg" width="350"> | <img src="images/ScreenshotHIL.png" width="450"> |
 
 ---
